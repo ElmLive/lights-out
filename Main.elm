@@ -1,13 +1,13 @@
 module Main exposing (..)
 
 import Html.App
-import LightsGame
+import MultiGame
 
 
 main : Program Never
 main =
     Html.App.beginnerProgram
-        { model = LightsGame.initWithDefaultBoard
-        , update = LightsGame.update
-        , view = LightsGame.view
+        { model = MultiGame.init
+        , update = MultiGame.update
+        , view = MultiGame.view
         }

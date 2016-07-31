@@ -17,17 +17,22 @@ import Matrix exposing (Matrix)
 
 
 type alias Model =
-    { isOn : Matrix (Maybe Bool) }
+    { color : String
+    , isOn : Matrix (Maybe Bool)
+    }
 
 
 init : Matrix (Maybe Bool) -> Model
 init startingBoard =
-    { isOn = startingBoard }
+    { color = "orange"
+    , isOn = startingBoard
+    }
 
 
-initWithDefaultBoard : Model
-initWithDefaultBoard =
-    { isOn =
+initWithDefaultBoard : String -> Model
+initWithDefaultBoard color =
+    { color = color
+    , isOn =
         Matrix.repeat 6 6 (Just False)
             |> Matrix.set 4 3 Nothing
             |> Matrix.set 2 2 Nothing
@@ -98,15 +103,13 @@ view model =
             Html.text "You're a winner!"
           else
             gameView model
-        , Html.hr [] []
-        , Html.p [] [ Html.text <| toString model ]
         ]
 
 
 gameView : Model -> Html.Html Msg
 gameView model =
     model.isOn
-        |> Matrix.indexedMap lightButton
+        |> Matrix.indexedMap (lightButton model.color)
         |> matrixToDivs
 
 
@@ -127,8 +130,8 @@ matrixToDivs matrix =
             |> Html.div []
 
 
-lightButton : Int -> Int -> Maybe Bool -> Html.Html Msg
-lightButton x y maybeIsOn =
+lightButton : String -> Int -> Int -> Maybe Bool -> Html.Html Msg
+lightButton color x y maybeIsOn =
     case maybeIsOn of
         Nothing ->
             Html.div
@@ -147,7 +150,7 @@ lightButton x y maybeIsOn =
                 [ Html.Attributes.style
                     [ ( "background-color"
                       , if isOn then
-                            "orange"
+                            color
                         else
                             "grey"
                       )
