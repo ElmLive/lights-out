@@ -69,6 +69,19 @@ all =
                 |> Matrix.get 1 1
                 |> assertEqual (Just True)
             )
+        , suite "isSolved"
+            [ test "True when all lights are off"
+                (LightsGame.init squareBoard
+                    |> LightsGame.isSolved
+                    |> assertEqual True
+                )
+            , test "False when some lights are on"
+                (LightsGame.init squareBoard
+                    |> LightsGame.update (LightsGame.Toggle { x = 0, y = 0 })
+                    |> LightsGame.isSolved
+                    |> assertEqual False
+                )
+            ]
         ]
 
 

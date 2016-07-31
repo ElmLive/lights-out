@@ -7,7 +7,7 @@ import LightsGame
 main : Program Never
 main =
     Html.App.beginnerProgram
-        { model = LightsGame.init LightsGame.defaultBoard
+        { model = LightsGame.initWithDefaultBoard
         , update = LightsGame.update
         , view = LightsGame.view
         }

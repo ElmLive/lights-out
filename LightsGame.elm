@@ -1,9 +1,10 @@
 module LightsGame
     exposing
         ( Model
-        , Msg(..)
         , init
-        , defaultBoard
+        , initWithDefaultBoard
+        , isSolved
+        , Msg(..)
         , update
         , view
         )
@@ -24,9 +25,25 @@ init startingBoard =
     { isOn = startingBoard }
 
 
-defaultBoard : Matrix Bool
-defaultBoard =
-    Matrix.repeat 5 5 True
+initWithDefaultBoard : Model
+initWithDefaultBoard =
+    { isOn = Matrix.repeat 6 6 False }
+        |> update (Toggle { x = 0, y = 0 })
+        |> update (Toggle { x = 2, y = 0 })
+        |> update (Toggle { x = 1, y = 4 })
+        |> update (Toggle { x = 4, y = 2 })
+        |> update (Toggle { x = 5, y = 0 })
+        |> update (Toggle { x = 0, y = 2 })
+        |> update (Toggle { x = 1, y = 1 })
+
+
+isSolved : Model -> Bool
+isSolved model =
+    let
+        onLights =
+            Matrix.filter identity model.isOn
+    in
+        Array.isEmpty onLights
 
 
 
@@ -65,12 +82,20 @@ toggleLight indexToToggle matrix =
 view : Model -> Html.Html Msg
 view model =
     Html.div []
-        [ model.isOn
-            |> Matrix.indexedMap lightButton
-            |> matrixToDivs
+        [ if isSolved model then
+            Html.text "You're a winner!"
+          else
+            gameView model
         , Html.hr [] []
         , Html.p [] [ Html.text <| toString model ]
         ]
+
+
+gameView : Model -> Html.Html Msg
+gameView model =
+    model.isOn
+        |> Matrix.indexedMap lightButton
+        |> matrixToDivs
 
 
 matrixToDivs : Matrix (Html.Html Msg) -> Html.Html Msg
